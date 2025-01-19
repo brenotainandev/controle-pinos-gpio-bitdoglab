@@ -46,7 +46,8 @@ pico_enable_stdio_usb(controle-pinos-gpio-bitdoglab 1)
 
 # Add the standard library to the build
 target_link_libraries(controle-pinos-gpio-bitdoglab
-        pico_stdlib)
+        pico_stdlib
+        hardware_pwm)
 
 # Add the standard include files to the build
 target_include_directories(controle-pinos-gpio-bitdoglab PRIVATE
