@@ -158,6 +158,8 @@ void processar_comando(const char *comando) {
                 gpio_put(LED_VERMELHO, 1);
                 gpio_put(LED_VERDE, 1);
                 gpio_put(LED_AZUL, 1);
+            } else {
+                printf("Comando inválido: %s\n", comando);
             }
             break;
         case 'F': //reboot do raspberry - Matheus
