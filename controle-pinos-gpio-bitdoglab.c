@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "pico/stdlib.h"
 
 // Definição dos pinos dos LEDs e do buzzer
@@ -18,11 +19,37 @@ void exibir_menu();
 int main() {
     iniciar_pinos(); // Inicializa os pinos dos LEDs e do buzzer
     stdio_init_all(); // Inicializa o sistema de entrada/saída padrão
-    sleep_ms(500); // Pequeno atraso para estabilização 
+    sleep_ms(500); // Pequeno atraso para estabilização
+
+    // Define o buffer de saída como não bufferizado
+    setvbuf(stdout, NULL, _IONBF, 0);
+
+    printf("\n=== Bem-vindo ao Sistema de Controle GPIO ===\n");
+
+    char comando[10]; // Buffer para o comando digitado
+    int i = 0;        // Índice do buffer
+
+    exibir_menu();
+
+    printf("\nDigite um comando: "); // Exibe o prompt inicial
 
     while (true) {  
-        printf("Aguardando entrada: ");
+        char c = getchar(); // Captura um caractere do terminal
 
+        if (c == '\n' || c == '\r') { // Verifica se é Enter
+            comando[i] = '\0'; // Finaliza a string
+            printf("\nComando completo: %s\n", comando);
+            i = 0; // Reseta o índice do buffer
+            printf("\nDigite um comando: "); // Solicita novo comando
+        } else if (c == 127) { // Verifica se é Backspace
+            if (i > 0) {
+                i--;
+                printf("\b \b"); // Remove o último caractere na tela
+            }
+        } else if (i < sizeof(comando) - 1) { // Verifica se há espaço no buffer
+            comando[i++] = c; // Armazena o caractere no buffer
+            putchar(c); // Imprime o caractere na mesma linha
+        }
     }
 }
 
