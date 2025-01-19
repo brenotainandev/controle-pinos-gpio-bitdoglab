@@ -33,12 +33,13 @@ int main() {
 
     printf("\nDigite um comando: "); // Exibe o prompt inicial
 
-    while (true) {  
+    while (true) {
         char c = getchar(); // Captura um caractere do terminal
 
         if (c == '\n' || c == '\r') { // Verifica se é Enter
             comando[i] = '\0'; // Finaliza a string
             printf("\nComando completo: %s\n", comando);
+            processar_comando(comando); // Processa o comando
             i = 0; // Reseta o índice do buffer
             printf("\nDigite um comando: "); // Solicita novo comando
         } else if (c == 127) { // Verifica se é Backspace
@@ -51,18 +52,8 @@ int main() {
             putchar(c); // Imprime o caractere na mesma linha
         }
     }
-}
 
-void iniciar_pinos(){
-    gpio_init(LED_VERMELHO);
-    gpio_init(LED_VERDE);
-    gpio_init(LED_AZUL);
-    gpio_init(PINO_BUZZER);
-
-    gpio_set_dir(LED_VERMELHO, GPIO_OUT);
-    gpio_set_dir(LED_VERDE, GPIO_OUT);
-    gpio_set_dir(LED_AZUL, GPIO_OUT);
-    gpio_set_dir(PINO_BUZZER, GPIO_OUT);
+    return 0;
 }
 
 // === Funções Auxiliares ===
@@ -119,5 +110,67 @@ void ativar_buzzer(int duration) {
 
 // Processa os comandos recebidos
 void processar_comando(const char *comando) {
+    if (strlen(comando) == 0) {
+        printf("Comando vazio. Digite algo.\n");
+        return;
+    }
 
+    switch (toupper(comando[0])) {
+        case 'R':
+            if (strcasecmp(comando, "RED") == 0) {
+                printf("Ligando LED VERMELHO\n");
+                desligar_todos_leds();
+                ligar_led(LED_VERMELHO);
+            } else {
+                printf("Comando inválido: %s\n", comando);
+            }
+            break;
+
+        case 'G':
+            if (strcasecmp(comando, "GREEN") == 0) {
+                printf("Ligando LED VERDE\n");
+                desligar_todos_leds();
+                ligar_led(LED_VERDE);
+            } else {
+                printf("Comando inválido: %s\n", comando);
+            }
+            break;
+
+        case 'B':
+            if (strcasecmp(comando, "BLUE") == 0) {
+                printf("Ligando LED AZUL\n");
+                desligar_todos_leds();
+                ligar_led(LED_AZUL);
+            } else if (strcasecmp(comando, "BUZZ") == 0) {
+                printf("Ativando o BUZZER\n");
+                ativar_buzzer(1000);
+            } else {
+                printf("Comando inválido: %s\n", comando);
+            }
+            break;
+
+        case 'W':
+            if (strcasecmp(comando, "WHITE") == 0) {
+                printf("Ligando TODOS os LEDs (luz branca)\n");
+                gpio_put(LED_VERMELHO, 1);
+                gpio_put(LED_VERDE, 1);
+                gpio_put(LED_AZUL, 1);
+            } else {
+                printf("Comando inválido: %s\n", comando);
+            }
+            break;
+
+        case 'O':
+            if (strcasecmp(comando, "OFF") == 0) {
+                printf("Desligando TODOS os LEDs\n");
+                desligar_todos_leds();
+            } else {
+                printf("Comando inválido: %s\n", comando);
+            }
+            break;
+
+        default:
+            printf("Comando desconhecido: %s\n", comando);
+            break;
+    }
 }
