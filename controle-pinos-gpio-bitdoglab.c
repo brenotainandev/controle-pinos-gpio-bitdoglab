@@ -2,6 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "pico/stdlib.h"
+#include "pico/bootrom.h" //biblioteca para reboot do raspberry - Matheus
 
 // Definição dos pinos dos LEDs e do buzzer
 #define LED_VERMELHO 13
@@ -68,6 +69,7 @@ void exibir_menu() {
     printf("WHITE - Liga todos os LEDs (luz branca)\n");
     printf("OFF   - Desliga todos os LEDs\n");
     printf("BUZZ  - Ativa o buzzer\n");
+    printf("F     - Entra no modo BOOTSEL\n");
     printf("============================\n");
 }
 
@@ -156,7 +158,15 @@ void processar_comando(const char *comando) {
                 gpio_put(LED_VERMELHO, 1);
                 gpio_put(LED_VERDE, 1);
                 gpio_put(LED_AZUL, 1);
-            } else {
+            }
+            break;
+        case 'F': //reboot do raspberry - Matheus
+            if (strcasecmp(comando, "F") == 0) {
+                printf("Entrando no modo BOOTSEL...\n");
+                sleep_ms(500);
+                reset_usb_boot(0, 0);
+            }
+            else{
                 printf("Comando inválido: %s\n", comando);
             }
             break;
